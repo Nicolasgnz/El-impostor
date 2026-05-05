@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>El Impostor</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d12;color:#eeeef5;font-family:system-ui,sans-serif;min-height:100vh}
+.pg{display:none;max-width:480px;margin:0 auto;padding:32px 20px;min-height:100vh;flex-direction:column;gap:14px}
+.pg.on{display:flex}
+h1{font-size:40px;font-weight:900;color:#f0ff4e;letter-spacing:2px;line-height:1}
+.sub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#7878a0;margin-top:4px}
+.lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5a5a7a;margin-bottom:5px}
+input{width:100%;padding:14px 16px;background:#1e1e2a;border:1.5px solid #2e2e42;border-radius:12px;color:#eeeef5;font-size:16px;font-family:inherit;outline:none;display:block}
+input:focus{border-color:#f0ff4e}
+input::placeholder{color:#5a5a7a}
+.btn{width:100%;padding:16px;border-radius:12px;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn:active{opacity:.8}
+.btn:disabled{opacity:.3;cursor:default}
+.Y{background:#f0ff4e;color:#0d0d12}
+.O{background:transparent;color:#eeeef5;border:1.5px solid #3e3e58}
+.BIG{font-size:20px;padding:20px;letter-spacing:2px;text-transform:uppercase}
+.or{display:flex;align-items:center;gap:10px;color:#5a5a7a;font-size:12px}
+.or::before,.or::after{content:'';flex:1;height:1px;background:#2e2e42}
+.box{background:#1e1e2a;border:1.5px solid #2e2e42;border-radius:14px;padding:16px}
+.code{font-size:46px;font-weight:900;letter-spacing:8px;color:#f0ff4e;text-align:center;margin-top:4px;word-break:break-all}
+.srow{display:flex;align-items:center;gap:8px;background:#1e1e2a;border:1.5px solid #2e2e42;border-radius:11px;padding:10px 12px}
+.surl{font-size:11px;color:#7878a0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scopy{background:#26263a;border:none;border-radius:7px;padding:6px 12px;color:#eeeef5;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cb{padding:11px 8px;background:#1e1e2a;border:1.5px solid #2e2e42;border-radius:11px;color:#eeeef5;font-size:13px;font-weight:500;cursor:pointer;text-align:center;font-family:inherit}
+.cb span{display:block;font-size:18px;margin-bottom:2px}
+.cb.on{border-color:#f0ff4e;color:#f0ff4e;background:rgba(240,255,78,.07)}
+.col{background:#1e1e2a;border:1.5px solid #2e2e42;border-radius:14px;overflow:hidden}
+.colh{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer}
+.coln{background:#26263a;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:700;color:#f0ff4e}
+.cola{font-size:10px;color:#7878a0;transition:transform .2s;display:inline-block}
+.cola.open{transform:rotate(180deg)}
+.colb{display:none;padding:0 12px 12px;flex-direction:column;gap:6px}
+.colb.open{display:flex}
+.pr{display:flex;align-items:center;gap:10px;background:#26263a;border-radius:10px;padding:10px 12px}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.pn{font-size:14px;font-weight:500;flex:1}
+.hb{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#f0ff4e;border:1px solid rgba(240,255,78,.4);padding:2px 6px;border-radius:4px}
+.vr{display:flex;align-items:center;gap:10px;background:#26263a;border-radius:10px;padding:10px 12px}
+.vb{background:#ff4e8a;border:none;border-radius:8px;padding:6px 14px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:inherit}
+.vb:disabled{opacity:.3;background:#5a5a7a;cursor:default}
+.wbig{font-size:50px;font-weight:900;color:#f0ff4e;text-align:center;line-height:1.1;padding:20px 0 8px}
+.wsub{font-size:14px;color:#7878a0;text-align:center;line-height:1.6}
+.jbox{border:2px solid #4effd8;border-radius:18px;background:rgba(78,255,216,.04);padding:28px 20px;text-align:center}
+.rp{display:flex;align-items:center;gap:10px;margin:12px 0}
+.rw{flex:1;padding:16px 8px;border-radius:12px;font-size:19px;font-weight:800;text-align:center}
+.rw.m{background:rgba(240,255,78,.08);border:1.5px solid #f0ff4e;color:#f0ff4e}
+.rw.i{background:rgba(255,78,138,.08);border:1.5px solid #ff4e8a;color:#ff4e8a}
+.vs{font-size:16px;font-weight:800;color:#5a5a7a}
+.info{background:#1e1e2a;border-radius:12px;padding:14px 16px;font-size:13px;color:#7878a0;line-height:1.7}
+.info strong{color:#eeeef5}
+.sp{flex:1}
+.dots{display:flex;gap:6px;justify-content:center;padding:8px 0}
+.dots span{width:7px;height:7px;border-radius:50%;background:#f0ff4e;animation:d 1.2s ease-in-out infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes d{0%,80%,100%{transform:scale(.5);opacity:.3}40%{transform:scale(1);opacity:1}}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1e2a;border:1.5px solid #2e2e42;color:#eeeef5;padding:10px 16px;border-radius:9px;font-size:14px;transition:transform .3s;z-index:999;pointer-events:none;white-space:nowrap}
+#toast.on{transform:translateX(-50%) translateY(0)}
+#toast.e{border-color:#ff4e8a;color:#ff4e8a}
+</style>
+</head>
+<body>
+
+<div id="p0" class="pg on" style="display:flex!important">
+  <div><h1>EL IMPOSTOR</h1><div class="sub">Party game de deducción</div></div>
+  <div class="sp"></div>
+  <input id="hn" type="text" placeholder="Tu nombre" maxlength="20" autocomplete="off">
+  <button class="btn Y" onclick="createRoom()">Crear sala</button>
+  <div class="or">o</div>
+  <input id="hc" type="text" placeholder="Código de sala" maxlength="6" style="text-transform:uppercase;letter-spacing:4px;text-align:center" autocomplete="off">
+  <button class="btn O" onclick="joinRoom()">Unirse a sala</button>
+  <div class="sp"></div>
+  <div class="info">Cada jugador ve su <strong>palabra secreta</strong> en su celular. Uno es el <strong>Impostor</strong>: tiene una palabra similar pero distinta.</div>
+</div>
+
+<div id="p1" class="pg">
+  <div class="lbl">sala activa</div>
+  <div class="box" style="text-align:center">
+    <div class="lbl">Código para unirse</div>
+    <div class="code" id="l-code">——</div>
+  </div>
+  <div id="l-share" style="display:none">
+    <div class="srow"><span class="surl" id="l-link"></span><button class="scopy" onclick="copyLink()">Copiar link</button></div>
+  </div>
+  <div id="l-cats" style="display:none">
+    <div class="lbl">Categoría</div>
+    <div class="g2">
+      <button class="cb on" data-cat="general" onclick="pickCat(this)"><span>🎲</span>General</button>
+      <button class="cb" data-cat="deportes" onclick="pickCat(this)"><span>⚽</span>Deportes</button>
+      <button class="cb" data-cat="cultura_pop" onclick="pickCat(this)"><span>🎬</span>Cultura Pop</button>
+      <button class="cb" data-cat="animales" onclick="pickCat(this)"><span>🦁</span>Animales</button>
+      <button class="cb" data-cat="comida" onclick="pickCat(this)"><span>🍕</span>Comida</button>
+      <button class="cb" data-cat="lugares" onclick="pickCat(this)"><span>🌍</span>Lugares</button>
+      <button class="cb" data-cat="historia" onclick="pickCat(this)"><span>📜</span>Historia</button>
+      <button class="cb" data-cat="tecnologia" onclick="pickCat(this)"><span>💻</span>Tecnología</button>
+    </div>
+  </div>
+  <div class="col">
+    <div class="colh" onclick="tog('lc')">
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px;font-weight:600">Jugadores</span><span class="coln" id="l-cnt">0</span></div>
+      <span class="cola" id="lc-a">▼</span>
+    </div>
+    <div class="colb" id="lc"><div id="l-pls"></div></div>
+  </div>
+  <div class="sp"></div>
+  <div id="l-ha" style="display:none">
+    <button class="btn Y BIG" id="l-start" onclick="startGame()">COMENZAR</button>
+    <div style="text-align:center;margin-top:10px;font-size:12px;color:#7878a0" id="l-hint"></div>
+  </div>
+  <div id="l-gw" style="display:none;text-align:center;padding:8px 0">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div style="font-size:13px;color:#7878a0;margin-top:8px">Esperando que el host inicie...</div>
+  </div>
+</div>
+
+<div id="p2" class="pg" style="justify-content:space-between">
+  <div class="lbl" style="text-align:center">tu palabra secreta</div>
+  <div id="r-a" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center"></div>
+  <button class="btn Y" onclick="goPlay()">Listo, empezar a jugar</button>
+</div>
+
+<div id="p3" class="pg">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div><div class="lbl">partida en curso</div><div style="font-size:22px;font-weight:800;margin-top:2px">RONDA ACTIVA</div></div>
+    <button onclick="go('p2')" style="background:transparent;border:1.5px solid #3e3e58;border-radius:9px;padding:8px 12px;color:#7878a0;font-size:12px;cursor:pointer;font-family:inherit">Mi palabra</button>
+  </div>
+  <div class="col">
+    <div class="colh" onclick="tog('vc')">
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px;font-weight:600">Votar jugador</span><span class="coln" id="p-cnt">0</span></div>
+      <span class="cola" id="vc-a">▼</span>
+    </div>
+    <div class="colb" id="vc"><div id="p-pls" style="display:flex;flex-direction:column;gap:6px"></div></div>
+  </div>
+  <div id="v-msg" style="display:none;background:#1e1e2a;border-radius:11px;padding:12px 16px;font-size:13px;color:#7878a0;text-align:center">✓ Ya votaste en esta ronda</div>
+  <div class="sp"></div>
+  <div id="p-nr" style="display:none"><button class="btn O" onclick="newRound()">Nueva ronda</button></div>
+</div>
+
+<div id="p4" class="pg">
+  <div><div class="lbl">resultado</div><div style="font-size:34px;font-weight:900;margin-top:2px">REVELACIÓN</div></div>
+  <div class="box" style="text-align:center">
+    <div class="lbl">jugador votado</div>
+    <div style="font-size:22px;font-weight:800;margin-top:6px" id="rv-n">—</div>
+  </div>
+  <div>
+    <div class="lbl" style="text-align:center;margin-bottom:8px">palabras en juego</div>
+    <div class="rp"><div class="rw m" id="rv-m">—</div><div class="vs">VS</div><div class="rw i" id="rv-i">—</div></div>
+    <div style="display:flex;justify-content:space-between;padding:0 2px">
+      <span style="font-size:11px;color:#7878a0">← mayoría</span>
+      <span style="font-size:11px;color:#7878a0">impostor →</span>
+    </div>
+  </div>
+  <div id="rv-v" style="background:#1e1e2a;border-radius:12px;padding:14px 16px;font-size:14px;text-align:center;line-height:1.6"></div>
+  <div class="sp"></div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <button class="btn O" onclick="go('p3')">← Volver al juego</button>
+    <div id="rv-nr" style="display:none"><button class="btn Y" onclick="newRound()">Nueva ronda</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+  // Show home immediately
+  document.getElementById('p0').style.cssText = 'display:flex!important';
+  
+  try {
+
+var WORDS={"general":[["Carnaval","Fiesta Patria"],["Chocolate","Caramelo"],["Iron Man","Thor"],["Ping\u00fcino","Foca"],["Sol","Luna"],["Verde","Turquesa"],["Pel\u00edcula","Serie"],["Norte","Sur"],["Hipop\u00f3tamo","Cocodrilo"],["Whisky","Ron"],["Jefe","Supervisor"],["Sonata","Suite"],["Tao\u00edsmo","Sinto\u00edsmo"],["Reloj","Cron\u00f3metro"],["F\u00fatbol","Rugby"],["Pantal\u00f3n","Jean"],["Lechuga","Espinaca"],["Harry Potter","Percy Jackson"],["Mario","Sonic"],["Tenis","P\u00e1del"],["Libro","Revista"],["Poema","Soneto"],["Teatro","Cine"],["Corbata","Cintur\u00f3n"],["Balada","Rapsod\u00eda"],["Radio","Parlante"],["Rey","Pr\u00edncipe"],["Historia","Geograf\u00eda"],["Padre","T\u00edo"],["Sobre","Paquete"],["Arcilla","Porcelana"],["Cebolla","Ajo"],["Peri\u00f3dico","Bolet\u00edn"],["Gato","Perro"],["Camisa","Blusa"],["Estrella","Planeta"],["Hurac\u00e1n","Tornado"],["Perro","Lobo"],["Pulpo","Calamar"],["Terremoto","Tsunami"],["Ciudad","Pueblo"],["Ri\u00f1onera","Portafolio"],["Jazz","Blues"],["Guerra","Conflicto"],["Enana Blanca","Estrella de Neutrones"],["Mar","Lago"],["Cr\u00f3nica","Reportaje"],["Submarino","Barco"],["Paz","Armon\u00eda"],["Sat\u00e9lite","Estaci\u00f3n Espacial"]],"deportes":[["PSG","Olympique"],["Operaci\u00f3n","Cirug\u00eda"],["Ajax","Feyenoord"],["Tiro","Disparo"],["Semifinal","Cuartos de Final"],["Flag Football","Touch Rugby"],["Offside","Fuera de Juego"],["Kitesurf","Wakeboard"],["Tenis","P\u00e1del"],["Spartan Race","Tough Mudder"],["Penales","Tanda de Penales"],["Decatl\u00f3n","Triatl\u00f3n"],["Michael Jordan","LeBron James"],["Recuperaci\u00f3n","Rehabilitaci\u00f3n"],["Arsenal","Chelsea"],["BMX","Downhill"],["Entrenador","T\u00e9cnico"],["Skate","Longboard"],["FIFA","PES"],["Remate","Volea"],["Carrera de Caballos","Endurance"],["Extremo","Carrilero"],["Ciclismo Adaptado","Atletismo en Silla"],["Golf","Polo"],["BASE Jump","Puenting"],["Supergigante","Super G"],["Bate","Paleta"],["Ace","Winner"],["Surf de Olas","Surf de Remo"],["Red","Arco"],["Olimpiadas","Paral\u00edmpicos"],["Polo en Yak","Polo en Remo"],["Tackle","Placaje"],["Pr\u00f3rroga","Tiempo Extra"],["Hockey sobre Patines","Inline Hockey"],["Cabezazo","Testazo"],["Hockey sobre Hielo","Patinaje"],["Chilena","Tijera"],["Pase","Asistencia"],["Gimnasio","Polideportivo"],["Bob","Luge"],["Tarjeta Roja","Expulsi\u00f3n"],["Patinaje de Figuras","Danza sobre Hielo"],["CrossCountry","Ski Alpino"],["Esqu\u00ed","Snowboard"],["E-Sports","Gaming Profesional"],["Orientaci\u00f3n","Carreras de Aventura"],["Biatl\u00f3n","Pentatl\u00f3n"],["Pentatl\u00f3n","Heptatl\u00f3n"],["Punto","Game"]],"cultura_pop":[["Nicki Nicole","Cazzu"],["Terminator","RoboCop"],["Se7en","Zodiac"],["Moon Knight","She-Hulk"],["Cumbia","Salsa"],["Boris","Suburra"],["Happy Endings","Dont Trust the B"],["Spider-Man Into the Spider-Verse","Spider-Man Across the Spider-Verse"],["The Handmaiden","I Saw the Devil"],["Burning","Mother"],["Stranger Things","Dark"],["Lex Luthor","Doctor Doom"],["Aladdin","Mulan"],["Naruto","Dragon Ball"],["Finding Nemo","WALL-E"],["Ozuna","Maluma"],["Cyberpunk","Deus Ex"],["Moana","Raya"],["Superman","Thor"],["Zoom","Teams"],["Moulin Rouge","Chicago"],["The Weeknd","Frank Ocean"],["Speed","Die Hard"],["Blacklist","Homeland"],["District 9","Arrival"],["Jurassic Park","King Kong"],["Au Service de la France","Dix Pour Cent"],["Virgin River","Sweet Magnolias"],["Bioshock","Fallout"],["The Green Mile","Shawshank Redemption"],["Velvet","Cu\u00e9ntame"],["Selfie","Story"],["Titanic","Jurassic Park"],["Frozen","Encanto"],["Avatar","Matrix"],["Bugs Bunny","Daffy Duck"],["True Detective","Mare of Easttown"],["Ichigo","Rukia"],["Obi-Wan Kenobi","Ahsoka"],["Dirty Dancing","Footloose"],["Mindhunter","Criminal Minds"],["Megan Thee Stallion","Cardi B"],["Battlefield","Halo"],["Thor Ragnarok","Guardians of the Galaxy"],["War of the Worlds","Independence Day"],["Hunter x Hunter","Fullmetal Alchemist"],["Darth Vader","Voldemort"],["Forrest Gump","Cast Away"],["Dune","Foundation"],["Emily in Paris","Sex and the City"]],"animales":[["Llama","Alpaca"],["Jabal\u00ed Verrugoso","Jabal\u00ed Gigante"],["Ballena","Delf\u00edn"],["Caballo \u00c1rabe","Caballo Fris\u00f3n"],["L\u00e9mur","Tarsero"],["Salamandra","Trit\u00f3n"],["Murci\u00e9lago Vampiro","Murci\u00e9lago de Frutas"],["Rana","Sapo"],["Gamo","Corzo"],["Chinchilla","Deg\u00fa"],["Pavo Real","Fais\u00e1n"],["Estornino","Mirlo"],["Gato","Puma"],["Taip\u00e1n","Serpiente Tigre"],["Mamba Negra","Mamba Verde"],["Gato Maine Coon","Gato Noruego"],["Vieira","Chirla"],["Rinoceronte de Sumatra","Rinoceronte de Java"],["Jilguero","Pinz\u00f3n"],["Tortuga Carey","Tortuga Boba"],["\u00c1guila","Halc\u00f3n"],["Loro Ecl\u00e9ctico","Loro del Amazonas"],["Ping\u00fcino Barbijo","Ping\u00fcino Adelia"],["Gib\u00f3n","Siamang"],["Quimera","Esfinge"],["B\u00fafalo Africano","B\u00fafalo de Agua"],["Babirusa","Pecar\u00ed"],["Gato Mont\u00e9s","Serval"],["Musara\u00f1a","Musara\u00f1a de Agua"],["Vespertilio","Murci\u00e9lago Pipa"],["Nutria Marina","Nutria de R\u00edo"],["Loro Gris Africano","Guacamayo Azul"],["Oso Polar","Oso Grizzly"],["Carpa","Carp\u00edn Dorado"],["Cuarto de Milla","Mustang"],["Gamba","Camar\u00f3n"],["Tigre","Leopardo"],["Grifo","Hipogrifo"],["Venado Cola Blanca","Venado Bura"],["Lince","Bobcat"],["Pepino de Mar","Holoturia"],["Salm\u00f3n","Trucha"],["Nautilus","Argonauta"],["Babuino","Mandril"],["Appaloosa","Pinto"],["Oso Pardo","Oso Negro"],["Pipistrelo","Murci\u00e9lago Libre"],["Bandicoot","Potoroo"],["Chimpanc\u00e9","Bonobo"],["Canguro","Ualab\u00ed"]],"comida":[["Sangr\u00eda","Terer\u00e9"],["Tarta de Manzana","Tarta Tatin"],["Asado de Tira","Vac\u00edo"],["Tiramis\u00fa","Panna Cotta"],["Mechoui","Mrouzia"],["Ojo de Bife","Bife Angosto"],["Shakshuka","Msemen"],["Pizza","Calzone"],["Pad Thai","Pad See Ew"],["Pesto","Tapenade"],["Gyoza","Wonton"],["Churros","Rosquillas"],["Salame","Chorizo"],["Conejo en Escabeche","Conejo al Ajillo"],["Palmier","Milhojas"],["Baguette","Ciabatta"],["Cookie","Galleta"],["Sopa Paraguaya","Bori Bori"],["Pierogi","Blini"],["Hamburguesa","S\u00e1ndwich"],["Hot Dog","Pancho"],["Facturas de Panader\u00eda","Masas Finas"],["Soupe \u00e0 lOignon","Vichyssoise"],["Macchiato","Cortado"],["Couscous","Tagine"],["Parmesano","Pecorino"],["Ricardito","Rogel"],["Lulada","Cholado"],["Quiche Lorraine","Flamiche"],["Stroganoff","Beef Wellington"],["Mousse","Souffl\u00e9"],["Gazpacho","Salmorejo"],["Chip\u00e1","Chipa Guaz\u00fa"],["Bao","Mantou"],["Anticuchos","Picarones"],["Cazuela","Cocido"],["Carbonada","Locro"],["Chorip\u00e1n","Lomito"],["Arepa","Pupusa"],["Madeleine","Financier"],["Puchero","Escudella"],["Tiradito de At\u00fan","Tiradito de Salm\u00f3n"],["Ajiaco","Sopa de Mondongo"],["Chanfaina","Guatia"],["Enchiladas","Enfrijoladas"],["Dal","Sambar"],["Brigadeiro","Beijinho"],["Queso Brie","Queso Camembert"],["Tortilla","Chapati"],["Lichi","Rambut\u00e1n"]],"lugares":[["Miami","Orlando"],["Set\u00fabal","\u00c9vora"],["Egipto","Grecia"],["San Crist\u00f3bal","Moca"],["Lago Superior","Lago Michigan"],["R\u00edo Mekong","R\u00edo Indus"],["Londres","Berl\u00edn"],["Birmingham","Leeds"],["Nueva York","Los \u00c1ngeles"],["San Francisco","Seattle"],["Sahara","Gobi"],["Malm\u00f6","Tampere"],["Delgado","San Marcos"],["Haw\u00e1i","Azores"],["Tirana","Skopje"],["Puntarenas","San Carlos"],["Mar de Coral","Mar de Timor"],["Holgu\u00edn","Camag\u00fcey"],["Lagos","Kinshasa"],["Chitr\u00e9","Penonom\u00e9"],["Seychelles","Comoras"],["Pereira","Manizales"],["Bucaramanga","Pereira"],["Dresde","Leipzig"],["D\u00fcsseldorf","Hannover"],["La Paz","Cochabamba"],["Gdansk","Wroclaw"],["Cuenca","Manta"],["Santiago","Valpara\u00edso"],["Maracay","Los Teques"],["Hiroshima","Nagasaki"],["Mosc\u00fa","San Petersburgo"],["Chicago","Houston"],["Cali","Cartagena"],["Dub\u00e1i","Abu Dabi"],["Z\u00farich","Ginebra"],["Manizales","Ibagu\u00e9"],["Mayag\u00fcez","Trujillo Alto"],["Lambar\u00e9","Fernando de la Mora"],["Vancouver","Ottawa"],["Curitiba","Florian\u00f3polis"],["Valencia","Barquisimeto"],["Edimburgo","Glasgow"],["Encarnaci\u00f3n","Pedro Juan Caballero"],["La Romana","San Pedro de Macor\u00eds"],["Tokio","Osaka"],["Ciudad de M\u00e9xico","Guadalajara"],["Colonia","Stuttgart"],["Cuzco","Lima"],["Alajuela","Heredia"]],"historia":[["Nabucodonosor","Hammurabi"],["Montesquieu","Voltaire"],["Jacques Chirac","Nicolas Sarkozy"],["Mill","Bentham"],["Revoluci\u00f3n Francesa","Revoluci\u00f3n Americana"],["Lenin","Trotsky"],["Edward Heath","James Callaghan"],["Napole\u00f3n","Julio C\u00e9sar"],["Tony Blair","Gordon Brown"],["Odoacro","Clodoveo"],["Esclavismo","Servidumbre"],["Kant","Hegel"],["Muamar Gadafi","Hosni Mubarak"],["Felipe IV","Mazarino"],["Adenauer","Erhard"],["Modernismo","Vanguardias"],["Reconquista","Expansi\u00f3n \u00c1rabe"],["Hobbes","Spinoza"],["Pompeyo","Craso"],["Carlos IV","Fernando VII"],["Liberalismo","Conservadurismo"],["Alberto Fern\u00e1ndez","Javier Milei"],["Napole\u00f3n III","Bismarck"],["Hatsepsut","Thutmosis III"],["Hern\u00e1n Cort\u00e9s","Pedro de Alvarado"],["Confucio","Lao Ts\u00e9"],["Juana de Arco","Catalina la Grande"],["Harun al-Rashid","Saladino"],["Guerras del Peloponeso","Guerras M\u00e9dicas"],["Pericles","Tem\u00edstocles"],["Tocqueville","Burke"],["Batalla de Trafalgar","Batalla de Austerlitz"],["Sim\u00f3n Bol\u00edvar","Antonio Jos\u00e9 de Sucre"],["Lavoisier","Priestley"],["Churchill","Roosevelt"],["Tamerl\u00e1n","Beyaz\u0131t"],["Eduardo Duhalde","N\u00e9stor Kirchner"],["Jo\u00e3o Goulart","Humberto Castelo Branco"],["Plat\u00f3n","Arist\u00f3teles"],["Pedro el Grande","Catalina la Grande"],["Colonialismo","Imperialismo"],["Fidel Castro","Ernesto Che Guevara"],["Egipto Antiguo","Mesopotamia"],["Cleopatra VII","Ptolomeo"],["Revoluci\u00f3n Cubana","Revoluci\u00f3n China"],["Hulagu","Chagatai"],["Batalla de Waterloo","Batalla de Leipzig"],["Han\u00f3ver","Windsor"],["Buda","Mahavira"],["Fran\u00e7ois Hollande","Emmanuel Macron"]],"tecnologia":[["Solana","Cardano"],["ElevenLabs","Murf"],["ESP32","STM32"],["OpenAI Gym","Gymnasium"],["DSPy","Outlines"],["React","Vue"],["SpaceX","Blue Origin"],["DynamoDB","CosmosDB"],["Dopamine","Acme"],["SDXL","SD3"],["Rancher","Nomad"],["Caddy","Traefik"],["Matplotlib","Plotly"],["Hey","Superhuman"],["Nginx","Apache"],["HubSpot","Salesforce"],["HTTP","HTTPS"],["Hydrogen Cell","Battery Storage"],["Midjourney","DALL-E"],["JSON","Protobuf"],["Pulumi","CDK"],["npm","yarn"],["Twitter","Mastodon"],["ControlNet","LoRA"],["Bluetooth","NFC"],["Neo4j","JanusGraph"],["Tresorit","SpiderOak"],["EC2","Compute Engine"],["openSUSE","Manjaro"],["Git","SVN"],["Raspberry Pi","Arduino"],["Varjo","Pimax"],["Agile","Scrum"],["Zoom","Teams"],["PostCSS","Sass"],["Dgraph","Stardog"],["MQTT","AMQP"],["TPOT","AutoSklearn"],["Zookeeper","etcd"],["Gemma","Phi"],["HDMI","DisplayPort"],["Stable Diffusion","Firefly"],["QD-OLED","Mini LED"],["PCIe","M.2"],["Quantum Computing","Neuromorphic Computing"],["Firewall","IDS"],["OAuth","JWT"],["PySpark","Koalas"],["iCloud","Mega"],["Arch Linux","Gentoo"]]}; 
+}
+
+var C=['#f0ff4e','#ff4e8a','#4effd8','#ffa04e','#c04eff','#4e8fff'];
+var G={id:null,name:null,code:null,host:false,players:[],cat:'general',role:null,word:null,pair:null,voted:false,ch:null};
+
+function sk(c){return 'i3_'+c;}
+function sr(r){try{localStorage.setItem(sk(r.code),JSON.stringify(r));}catch(e){}try{if(G.ch)G.ch.postMessage({c:r.code});}catch(e){}}
+function lr(c){try{var d=localStorage.getItem(sk(c));return d?JSON.parse(d):null;}catch(e){return null;}}
+function sch(c){try{if(G.ch)G.ch.close();G.ch=new BroadcastChannel('i3_'+c);G.ch.onmessage=function(e){if(e.data.c===c)sync();};}catch(e){}}
+var _p=null;
+function sp(){if(!_p)_p=setInterval(sync,1500);}
+
+function sync(){
+  var r=lr(G.code);if(!r)return;
+  G.players=r.players;
+  var cur=document.querySelector('.pg.on');cur=cur?cur.id:'';
+  if(r.status==='playing'&&!G.role&&r.gd){
+    var pd=r.gd[G.id];
+    if(pd){G.role=pd.role;G.word=pd.word;G.pair=r.pair;G.voted=false;renderRole();go('p2');return;}
+  }
+  if(r.pr&&r.pr.vid===G.id&&cur!=='p4'){doReveal(r.pr);return;}
+  if(r.status==='lobby'&&(cur==='p3'||cur==='p4'||cur==='p2')){
+    G.role=null;G.word=null;G.pair=null;G.voted=false;renderLobby(r);go('p1');return;
+  }
+  if(cur==='p1')renderLobby(r);
+  if(cur==='p3')renderVote(r);
+}
+
+function dist(n){
+  if(n<=5)return{i:1,j:0};if(n===6)return{i:0,j:1};
+  if(n<=9)return{i:2,j:1};if(n<=11)return{i:3,j:1};
+  if(n===12)return{i:4,j:1};
+  var s=Math.round(n*.4);return{i:Math.max(1,s-1),j:1};
+}
+function pair(cat){var a=WORDS[cat]||WORDS.general;var p=a[Math.floor(Math.random()*a.length)];return{main:p[0],imp:p[1]};}
+
+function createRoom(){
+  var name=san(q('hn').value);if(!name){toast('Ingresá tu nombre',1);return;}
+  var code=gc();
+  G.id=uid();G.name=name;G.code=code;G.host=true;
+  var r={code:code,host:G.id,players:[{id:G.id,name:name,h:true}],status:'lobby',cat:'general',gd:null,pair:null,pr:null,ts:Date.now()};
+  sr(r);sch(code);sp();setLUI(r);renderLobby(r);go('p1');
+}
+function joinRoom(){
+  var name=san(q('hn').value);if(!name){toast('Ingresá tu nombre',1);return;}
+  var code=q('hc').value.toUpperCase().trim();if(code.length<4){toast('Ingresá el código',1);return;}
+  var r=lr(code);
+  if(!r){toast('Sala no encontrada',1);return;}
+  if(r.status!=='lobby'){toast('La partida ya comenzó',1);return;}
+  if(r.players.length>=20){toast('Sala llena',1);return;}
+  G.id=uid();G.name=name;G.code=code;G.host=false;
+  r.players.push({id:G.id,name:name,h:false});r.ts=Date.now();
+  sr(r);sch(code);sp();setLUI(r);renderLobby(r);go('p1');
+}
+function setLUI(r){
+  q('l-code').textContent=r.code;
+  if(G.host){
+    var lk=location.href.split('?')[0]+'?sala='+r.code;
+    q('l-link').textContent=lk;
+    s('l-share');s('l-cats');s('l-ha');h('l-gw');
+  }else{h('l-share');h('l-cats');h('l-ha');s('l-gw');}
+}
+function pickCat(btn){
+  document.querySelectorAll('.cb').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');G.cat=btn.dataset.cat;
+  var r=lr(G.code);if(r){r.cat=G.cat;r.ts=Date.now();sr(r);}
+}
+function startGame(){
+  var r=lr(G.code);if(!r)return;
+  if(r.players.length<3){toast('Mínimo 3 jugadores',1);return;}
+  var btn=q('l-start');btn.disabled=true;btn.textContent='SORTEANDO...';
+  var p=pair(r.cat||'general');
+  var d=dist(r.players.length);
+  var sh=r.players.slice().sort(function(){return Math.random()-.5;});
+  var gd={};
+  sh.forEach(function(pl,i){
+    var role,word;
+    if(i<d.i){role='imp';word=p.imp;}
+    else if(i<d.i+d.j){role='jour';word=null;}
+    else{role='cit';word=p.main;}
+    gd[pl.id]={role:role,word:word};
+  });
+  r.status='playing';r.pair=p;r.gd=gd;r.pr=null;r.ts=Date.now();sr(r);
+  G.role=gd[G.id].role;G.word=gd[G.id].word;G.pair=p;G.voted=false;
+  renderRole();go('p2');
+}
+function renderRole(){
+  var a=q('r-a');
+  if(G.role==='jour'){
+    a.innerHTML='<div class="jbox"><div style="font-size:46px;margin-bottom:10px">📰</div><div style="font-size:26px;font-weight:800;letter-spacing:2px;color:#4effd8;margin-bottom:10px">PERIODISTA</div><div style="font-size:14px;color:#7878a0;line-height:1.7">No tenés palabra asignada.<br><strong style="color:#eeeef5">Sos el periodista.</strong><br><br>Escuchá las pistas y tratá de adivinar la palabra correcta para ganar de un golpe.</div></div>';
+  }else{
+    a.innerHTML='<div class="wbig">'+esc(G.word)+'</div><div class="wsub">Esta es tu palabra secreta. Dá pistas que entiendan tus compañeros sin revelar demasiado.</div>';
+  }
+}
+function goPlay(){
+  var r=lr(G.code);renderVote(r);
+  q('p-cnt').textContent=G.players.length;
+  h('v-msg');G.host?s('p-nr'):h('p-nr');go('p3');
+}
+function renderVote(r){
+  if(!r||!r.players)return;
+  var html='';
+  r.players.forEach(function(pl,i){
+    var me=pl.id===G.id;
+    var dis=(me||G.voted)?'disabled':'';
+    html+='<div class="vr"><div class="av" style="background:'+C[i%C.length]+'22;color:'+C[i%C.length]+'">'+esc(pl.name[0].toUpperCase())+'</div><div class="pn"'+(me?' style="color:#7878a0"':'')+'>'+esc(pl.name)+(me?' <span style="font-size:11px;color:#5a5a7a">(vos)</span>':'')+
+    '</div><button class="vb" '+dis+' onclick="vote(''+pl.id+'',''+esc(pl.name)+'')">Votar</button></div>';
+  });
+  q('p-pls').innerHTML=html;q('p-cnt').textContent=r.players.length;
+  G.voted?s('v-msg'):h('v-msg');
+}
+function vote(vid,vn){
+  if(G.voted)return;G.voted=true;
+  var r=lr(G.code);if(!r)return;
+  r.pr={vid:vid,vn:vn,mw:r.pair.main,iw:r.pair.imp,gd:r.gd};r.ts=Date.now();sr(r);
+  renderVote(r);toast('Votaste a '+vn);
+  if(vid===G.id)doReveal(r.pr);
+}
+function doReveal(rv){
+  q('rv-n').textContent=rv.vn||'—';q('rv-m').textContent=rv.mw||'?';q('rv-i').textContent=rv.iw||'?';
+  var pd=rv.gd&&rv.gd[G.id];var role=pd?pd.role:G.role;
+  var m={cit:'<span style="color:#f0ff4e">✅ Tenías la <strong>palabra correcta</strong>. Eras ciudadano.</span>',imp:'<span style="color:#ff4e8a">🕵️ Tenías la <strong>palabra del impostor</strong>. Eras el impostor.</span>',jour:'<span style="color:#4effd8">📰 No tenías ninguna palabra. <strong>Eras el periodista.</strong></span>'};
+  q('rv-v').innerHTML=m[role]||'';G.host?s('rv-nr'):h('rv-nr');go('p4');
+}
+function newRound(){
+  var r=lr(G.code);if(!r)return;
+  r.status='lobby';r.gd=null;r.pair=null;r.pr=null;r.ts=Date.now();sr(r);
+  G.role=null;G.word=null;G.pair=null;G.voted=false;
+  q('l-start').disabled=false;q('l-start').textContent='COMENZAR';
+  renderLobby(r);go('p1');
+}
+function renderLobby(r){
+  if(!r)return;G.players=r.players;
+  var n=r.players.length;q('l-cnt').textContent=n;
+  var html='';
+  r.players.forEach(function(pl,i){
+    html+='<div class="pr" style="margin-bottom:6px"><div class="av" style="background:'+C[i%C.length]+'22;color:'+C[i%C.length]+'">'+esc(pl.name[0].toUpperCase())+'</div><div class="pn">'+esc(pl.name)+'</div>'+(pl.h?'<span class="hb">HOST</span>':'')+' </div>';
+  });
+  q('l-pls').innerHTML=html;
+  if(G.host){
+    var d=dist(n);var btn=q('l-start');
+    if(n<3){btn.disabled=true;q('l-hint').textContent='Mínimo 3 jugadores ('+n+'/3)';}
+    else{btn.disabled=false;var c=n-d.i-d.j;q('l-hint').textContent=c+' ciudadano'+(c!==1?'s':'')+', '+d.i+' impostor'+(d.i!==1?'es':'')+(d.j?', 1 periodista':'');}
+  }
+}
+function tog(id){var b=q(id+'-a'),c=q(id);var o=c.classList.toggle('open');b.classList.toggle('open',o);}
+function copyLink(){
+  var lk=q('l-link').textContent;
+  function fb(){var t=document.createElement('textarea');t.value=lk;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);toast('Link copiado ✓');}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(lk).then(function(){toast('Link copiado ✓');}).catch(fb);else fb();
+}
+function go(id){document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});q(id).classList.add('on');}
+function s(id){q(id).style.display='block';}
+function h(id){q(id).style.display='none';}
+function q(id){return document.getElementById(id);}
+function san(s){if(typeof s!=='string')return'';return s.replace(/[<>"'&]/g,'').trim().slice(0,25);}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36);}
+function gc(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r='';for(var i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r;}
+var _tt;
+function toast(msg,err){var t=q('toast');t.textContent=msg;t.className=err?'on e':'on';clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('on');},3000);}
+
+q('hc').addEventListener('input',function(){this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');});
+q('hn').addEventListener('keydown',function(e){if(e.key==='Enter'){var c=q('hc').value.trim();if(c.length>=4)joinRoom();else createRoom();}});
+try{var _up=new URLSearchParams(location.search);var _uc=_up.get('sala');if(_uc)q('hc').value=_uc.toUpperCase().trim();}catch(e){}
+try{Object.keys(localStorage).filter(function(k){return k.indexOf('i3_')===0;}).forEach(function(k){try{var r=JSON.parse(localStorage.getItem(k));if(Date.now()-r.ts>10800000)localStorage.removeItem(k);}catch(e){}});}catch(e){}
+
+try {
+  go('p0');
+} catch(e) {
+  // fallback: show home directly
+  document.getElementById('p0').style.display = 'flex';
+}
+
+  } catch(e) {
+    console.log('JS Error:', e.message);
+    document.getElementById('p0').style.cssText = 'display:flex!important';
+  }
+});
+</script>
+</body>
+</html>
